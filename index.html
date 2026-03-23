@@ -1,0 +1,101 @@
+<!index.html>
+<html>
+<head>
+  <title>TPS_MIS Assignment POS System</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { color: #2c3e50; }
+    select, input { margin: 8px 0; padding: 6px; width: 200px; }
+    button { padding: 10px 15px; background: green; color: white; border: none; }
+    table { margin-top: 20px; border-collapse: collapse; width: 60%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+  </style>
+</head>
+
+<body>
+
+<h2>🛒 QuickMart POS (TPS System)</h2>
+
+<form id="posForm">
+
+  <label>Item:</label><br>
+  <select id="item">
+    <option value="1001,Gas Stove,55000">Gas Stove - $55000</option>
+    <option value="1002,Samsung Refrigerator,73000">Samsung Refrigerator - $73000</option>
+    <option value="1003,Air Conditioner,84000">Air Conditioner - $84000</option>
+    <option value="1004,Freezer,96000">Freezer - $96000</option>
+  </select><br>
+
+  <label>Quantity:</label><br>
+  <input type="number" id="qty" required><br>
+
+  <label>Cashier Name:</label><br>
+  <input type="text" id="cashier" required><br>
+
+  <button type="button" onclick="submitTransaction()">Submit Transaction</button>
+
+</form>
+
+<h3>📊 Daily Transactions</h3>
+
+<table id="reportTable">
+  <tr>
+    <th>Time</th>
+    <th>Item</th>
+    <th>Qty</th>
+    <th>Total</th>
+    <th>Cashier</th>
+  </tr>
+</table>
+
+<p id="totalSales"><strong>Total Sales: $0</strong></p>
+
+<script>
+let totalSales = 0;
+
+function submitTransaction() {
+  let itemData = document.getElementById("item").value.split(",");
+  let qty = parseInt(document.getElementById("qty").value);
+  let cashier = document.getElementById("cashier").value;
+
+  let itemCode = itemData[0];
+  let itemName = itemData[1];
+  let price = parseInt(itemData[2]);
+  let total = price * qty;
+  let time = new Date().toLocaleString();
+
+  // Update table
+  let table = document.getElementById("reportTable");
+  let row = table.insertRow();
+
+  row.insertCell(0).innerHTML = time;
+  row.insertCell(1).innerHTML = itemName;
+  row.insertCell(2).innerHTML = qty;
+  row.insertCell(3).innerHTML = "$" + total;
+  row.insertCell(4).innerHTML = cashier;
+
+  // Update total sales
+  totalSales += total;
+  document.getElementById("totalSales").innerHTML =
+    "<strong>Total Sales: $" + totalSales + "</strong>";
+
+  // SEND TO GOOGLE SHEETS
+  fetch("https://script.google.com/macros/s/AKfycbzVok0CUpklW6w1eSH-FM2OvdqKXdG8LA2Nrb2xW7B2c4-34pSYYzDTEFMONZ9NQitJew/exec", {
+    method: "POST",
+    body: text/plain.stringify({
+      time: time,
+      itemCode: itemCode,
+      itemName: itemName,
+      price: price,
+      quantity: qty,
+      total: total,
+      cashier: cashier
+    })
+  });
+
+  alert("Transaction Recorded!");
+}
+</script>
+
+</body>
+</html>
